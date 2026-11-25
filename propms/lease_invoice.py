@@ -123,7 +123,12 @@ def getDueDate(date, customer):
 
 
 @frappe.whitelist()
-def getCostCenter(name):
+def getCostCenter(name, property_unit=None):
+	"""Cost center of the billed unit; falls back to the main property of the lease."""
+	if property_unit:
+		cost_center = frappe.db.get_value("Property", property_unit, "cost_center")
+		if cost_center:
+			return cost_center
 	property_name = frappe.db.get_value("Lease", name, "property")
 	return frappe.db.get_value("Property", property_name, "cost_center")
 
@@ -223,7 +228,7 @@ def leaseInvoiceAutoCreate():
 			item_json["item_code"] = invoice_item.lease_item
 			item_json["qty"] = invoice_item.qty
 			item_json["rate"] = invoice_item.rate
-			item_json["cost_center"] = getCostCenter(invoice_item.parent)
+			item_json["cost_center"] = getCostCenter(invoice_item.parent, invoice_item.get("property_unit"))
 			item_json["withholding_tax_rate"] = invoice_item.tax
 
 			# Fetch deferred revenue configuration from Item Master and Item Defaults / Company

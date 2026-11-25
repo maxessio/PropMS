@@ -431,6 +431,7 @@ def makeInvoiceSchedule(
 	days_to_invoice_in_advance=None,
 	invoice_item_group=None,
 	document_type="Sales Invoice",
+	property_unit=None,
 ):
 	# Complimentary lease units remain part of occupancy, but are not billable.
 	# Guard the shared schedule creator so manual and nightly paths agree.
@@ -450,6 +451,7 @@ def makeInvoiceSchedule(
 				date_to_invoice=date_to_invoice,
 				schedule_start_date=date,
 				lease_item=item,
+				property_unit=property_unit,
 				paid_by=paid_by,
 				lease_item_name=item_name,
 				qty=qty,
